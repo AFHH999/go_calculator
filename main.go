@@ -53,30 +53,34 @@ func showResult(d Data) {
 
 func main() {
 
-	var input_data Data
-	input_data.num1 = getFloatInput("Insert the first number: ")
-	input_data.op = getCharInput(" What operation you need? (+, -, /, *)")
-	input_data.num2 = getFloatInput("Write the second number: ")
+	var inputData Data
+	inputData.num1 = getFloatInput("Insert the first number: ")
+	inputData.op = getCharInput(" What operation you need? (+, -, /, *)")
+	inputData.num2 = getFloatInput("Write the second number: ")
 
-	switch input_data.op {
+	switch inputData.op {
 	case "+":
-		input_data.result = input_data.num1 + input_data.num2
+		inputData.result = inputData.num1 + inputData.num2
 
 	case "-":
-		input_data.result = input_data.num1 - input_data.num2
+		inputData.result = inputData.num1 - inputData.num2
 
 	case "*":
-		input_data.result = input_data.num1 * input_data.num2
+		inputData.result = inputData.num1 * inputData.num2
 
 	case "/":
-		if input_data.num2 == 0 {
+		if inputData.num2 == 0 {
 			fmt.Println("Sorry you can't divide by zero. ")
+			return
 
 		} else {
-			input_data.result = input_data.num1 / input_data.num2
+			inputData.result = inputData.num1 / inputData.num2
 
 		}
+	default:
+		fmt.Printf("Error: invalid input '%s'\n", inputData.op)
+		return
 	}
 
-	showResult(input_data)
+	showResult(inputData)
 }
