@@ -15,15 +15,15 @@ type Data struct {
 	result float64
 }
 
-func getFloatInput(prompt string) float64 {
-	reader := bufio.NewReader(os.Stdin)
+func getFloatInput(prompt string, reader *bufio.Reader) float64 {
+
 	for {
 		fmt.Println(prompt)
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
-		num, err := strconv.ParseFloat(input, 64)
-		if err == nil {
+		num, err := strconv.ParseFloat(input, 64) // If conversion succesful num save it, if not err will hold an error value
+		if err == nil {                           // If err has no error value all good to go.
 			return num
 		} else {
 			fmt.Println("This is an invalid input. Please enter a valid number.")
@@ -31,8 +31,8 @@ func getFloatInput(prompt string) float64 {
 	}
 }
 
-func getCharInput(prompt string) string {
-	reader := bufio.NewReader(os.Stdin)
+func getCharInput(prompt string, reader *bufio.Reader) string {
+
 	for {
 		fmt.Println(prompt)
 		input, _ := reader.ReadString('\n')
@@ -51,12 +51,12 @@ func showResult(d Data) {
 	fmt.Printf("%.2f %s %.2f = %.2f\n", d.num1, d.op, d.num2, d.result)
 }
 
-func calculations() {
+func calculations(reader *bufio.Reader) {
 	var inputData Data
 
-	inputData.num1 = getFloatInput("Insert the first number: ")
-	inputData.op = getCharInput(" What operation you need? (+, -, /, *)")
-	inputData.num2 = getFloatInput("Write the second number: ")
+	inputData.num1 = getFloatInput("Insert the first number: ", reader)
+	inputData.op = getCharInput("What operation you need? (+, -, /, *)", reader)
+	inputData.num2 = getFloatInput("Write the second number: ", reader)
 
 	switch inputData.op {
 	case "+":
@@ -65,7 +65,7 @@ func calculations() {
 	case "-":
 		inputData.result = inputData.num1 - inputData.num2
 
-	case "*":
+	case "*", "x", "X":
 		inputData.result = inputData.num1 * inputData.num2
 
 	case "/":
@@ -85,33 +85,35 @@ func calculations() {
 	showResult(inputData)
 }
 
-func temp_converter() {
-	tempIn := getFloatInput("Insert the temperature you have: ")
-	unitIn := getCharInput("Insert the unit of the temperature (F, C, K)")
+func tempConverter(reader *bufio.Reader) {
+	tempIn := getFloatInput("Insert the temperature you have: ", reader)
+	unitIn := getCharInput("Insert the unit of the temperature (F, C, K)", reader)
 	var tempOut float64
 	var unitOut string
 
 	switch unitIn {
 	case "F", "f":
 		tempOut = (tempIn - 32.0) * 5.0 / 9.0
-		unitOut = "C"
+		unitOut = "ºC"
 
 	case "C", "c":
 		tempOut = (tempIn * 9.0 / 5.0) + 32.0
-		unitOut = "F"
+		unitOut = "ºF"
 
 	case "K", "k":
 		tempOut = tempIn - 273.15
-		unitOut = "F"
+		unitOut = "ºC"
 
 	default:
 		fmt.Println("Sorry, wrong input please use (F, C or K)")
+		return
 	}
 
 	fmt.Printf("Converted temperature: %.2f %s\n", tempOut, unitOut)
 }
 
 func main() {
+	reader := bufio.NewReader(os.Stdin)
 
 	for {
 		fmt.Println("What you want to do")
@@ -119,14 +121,14 @@ func main() {
 		fmt.Println("2- To use a temperature converter")
 		fmt.Println("3- To exit")
 
-		menu := int(getFloatInput("Insert what you want to do: "))
+		menu := int(getFloatInput("Insert what you want to do: ", reader))
 
 		switch menu {
 		case 1:
-			calculations()
+			calculations(reader)
 
 		case 2:
-			temp_converter()
+			tempConverter(reader)
 
 		case 3:
 			fmt.Println("Goodbye!")
