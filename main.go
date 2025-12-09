@@ -117,6 +117,19 @@ func tempConverter(reader *bufio.Reader) {
 }
 
 func saveHistory() {
+	var allHistory []Data // Load existing history to preserve past calculations // Load existing history to preserve past calculations
+
+	fileread, err := os.Open("History.json")
+
+	if err == nil {
+		decoder := json.NewDecoder(fileread)
+		_ = decoder.Decode(&allHistory)
+		fileread.Close()
+	}
+	// Append current session history
+	allHistory = append(allHistory, history...)
+
+	// Write combined history back to file
 	file, err := os.Create("History.json")
 
 	if err != nil {
